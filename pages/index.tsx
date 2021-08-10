@@ -1,23 +1,21 @@
 import Head from "next/head";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState} from "react";
 import styles from "../styles/Home.module.css";
 import { SigmaGraph } from "../components/DepsGraph";
-import { asyncComponent } from "react-async-component";
-
-const myGraph: SigmaGraph = {
-  nodes: [
-    { id: "n1", label: "Alice" },
-    { id: "n2", label: "Rabbit" }
-  ],
-  edges: [{ id: "e1", source: "n1", target: "n2", label: "SEES" }]
-};
+import dynamic from 'next/dynamic'
 
 export default function Home() {
   const [graphData, setGraphData] = useState<SigmaGraph>();
   useEffect(() => {
-    setGraphData(myGraph);
+    fetch("/api/hello")
+      .then(r => r.json())
+      .then(r => {
+        setGraphData(r);
+      });
   }, []);
+
+  const DepsGraph = dynamic(() => import('../components/DepsGraph'),{ loading: () => <Spinner/> })
 
   return (
     <div className={styles.container}>
@@ -28,7 +26,9 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <AsyncGraph data={graphData!} />
+      {
+        graphData && (<DepsGraph data={graphData}/>)
+      }
       </main>
 
       <footer className={styles.footer}>
@@ -47,8 +47,6 @@ export default function Home() {
   );
 }
 
-const AsyncGraph = asyncComponent({
-  resolve: () => import("../components/DepsGraph"),
-  LoadingComponent: () => <div>Loading...</div>, // Optional
-  ErrorComponent: ({ error }) => <div>{error.message}</div> // Optional
-});
+function Spinner(){
+  return <div>Loading...</div>
+}

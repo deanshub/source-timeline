@@ -1,12 +1,11 @@
-// @ts-ignore
-import { Sigma, RandomizeNodePositions, RelativeSize } from "react-sigma";
+import Graph from "react-graph-vis";
 
 export interface SigmaGraph {
   nodes: SigmaNode[];
   edges: SigmaEdge[];
 }
 
-interface SigmaNode {
+export interface SigmaNode {
   id: string;
   label: string;
   x?: number;
@@ -15,23 +14,24 @@ interface SigmaNode {
   color?: string;
 }
 
-interface SigmaEdge {
+export interface SigmaEdge {
   id: string;
-  source: string;
-  target: string;
+  from: string;
+  to: string;
   label?: string;
   color?: string;
 }
 
+const options = {
+  layout: {
+    hierarchical: true
+  },
+  edges: {
+    color: "#000000"
+  },
+};
+
 export default function DepsGraph({ data }: { data: SigmaGraph }) {
-  return (
-    <Sigma
-      graph={data}
-      style={{ width: "90vw", height: "90vh" }}
-      settings={{ drawEdges: true, clone: false }}
-    >
-      <RelativeSize initialSize={15} />
-      <RandomizeNodePositions />
-    </Sigma>
-  );
+  if (!window) return null;
+  return <Graph graph={data} options={options} />;
 }
