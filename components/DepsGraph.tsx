@@ -12,6 +12,7 @@ export interface SigmaNode {
   y?: number;
   size?: number;
   color?: string;
+  module: boolean;
 }
 
 export interface SigmaEdge {
@@ -28,7 +29,7 @@ const options = {
   },
   edges: {
     color: "#000000"
-  },
+  }
 };
 
 export default function DepsGraph({ data }: { data: SigmaGraph }) {

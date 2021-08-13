@@ -105,7 +105,7 @@ function sanitize(entryPoint: string, filePath: string, source?: string): {fileP
   const dirs = filePath.split('/')
   const nodeModulesIndex = dirs.lastIndexOf('node_modules')
 
-  if (nodeModulesIndex!==-1){
+  if (nodeModulesIndex!==-1 || dirs.length===1){
     return {
       filePath,
       id: dirs[nodeModulesIndex+1],

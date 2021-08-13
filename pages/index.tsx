@@ -1,21 +1,22 @@
 import Head from "next/head";
-import Image from "next/image";
 import { useEffect, useState} from "react";
 import styles from "../styles/Home.module.css";
 import { SigmaGraph } from "../components/DepsGraph";
 import dynamic from 'next/dynamic'
+import {toGraph} from '../utils/graphology'
+import type Graph from 'graphology'
 
 export default function Home() {
-  const [graphData, setGraphData] = useState<SigmaGraph>();
+  const [graphData, setGraphData] = useState<Graph>();
   useEffect(() => {
     fetch("/api/hello")
       .then(r => r.json())
       .then(r => {
-        setGraphData(r);
+        setGraphData(toGraph(r as SigmaGraph));
       });
   }, []);
 
-  const DepsGraph = dynamic(() => import('../components/DepsGraph'),{ loading: () => <Spinner/> })
+  const DepsGraph = dynamic(() => import('../components/MatterGraph'),{ loading: () => <Spinner/> })
 
   return (
     <div className={styles.container}>
@@ -30,19 +31,6 @@ export default function Home() {
         graphData && (<DepsGraph data={graphData}/>)
       }
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
     </div>
   );
 }
