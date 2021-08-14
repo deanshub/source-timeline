@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import {
   Engine,
+  Events,
   Render,
   Bodies,
   World,
@@ -80,8 +81,18 @@ export default function MatterGraph({ data }: { data: Graph }) {
         }
       }
     });
-
     World.add(engine.current.world, mouseConstraint);
+
+    Events.on(mouseConstraint, 'enddrag', (event) => {
+      (event.body as Body).isStatic= !(event.body as Body).isStatic;
+      if ((event.body as Body).isStatic){
+        (event.body as Body).render.lineWidth=5;
+        (event.body as Body).render.strokeStyle='#2F2F2F'
+      }else{
+        (event.body as Body).render.lineWidth=0;
+      }
+      console.log(event.body)
+    });
 
     Engine.run(engine.current);
     Render.run(render);
